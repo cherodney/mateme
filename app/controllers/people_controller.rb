@@ -17,16 +17,18 @@ class PeopleController < ApplicationController
      person.voided = 0 AND \
      (patient.voided = 0 OR patient.voided IS NULL) AND \
      (person_name.given_name LIKE ? OR person_name_code.given_name_code LIKE ?) AND \
-     (person_name.family_name LIKE ? OR person_name_code.family_name_code LIKE ?) AND \
-     (person_name.family_name2 LIKE ? OR person_name_code.family_name2_code LIKE ? OR person_name.family_name2 IS NULL )",
+     (person_name.family_name LIKE ? OR person_name_code.family_name_code LIKE ?)",
     params[:gender],
     params[:given_name],
     (params[:given_name] || '').soundex,
     params[:family_name],
-    (params[:family_name] || '').soundex,
-    params[:family_name2],
-    (params[:family_name2] || '').soundex,
+    (params[:family_name] || '').soundex
     ]) if @people.blank?
+    
+    # temp removed
+    # AND (person_name.family_name2 LIKE ? OR person_name_code.family_name2_code LIKE ? OR person_name.family_name2 IS NULL )"    
+    #  params[:family_name2],
+    #  (params[:family_name2] || '').soundex,
   end
  
   # This method is just to allow the select box to submit, we could probably do this better
@@ -55,7 +57,7 @@ class PeopleController < ApplicationController
       # This might actually be a national id, but currently we wouldn't know
       patient.patient_identifiers.create(:identifier => params[:identifier], :identifier_type => PatientIdentifierType.find_by_name("Unknown id")) unless params[:identifier].blank?
       patient.national_id_label
-      print_and_redirect("/patients/print_national_id/?patient_id=#{patient.id}", next_task(patient))
+      print_and_redirect("/patients/national_id_label/?patient_id=#{patient.id}", next_task(patient))
     else
       redirect_to :action => "index"
     end

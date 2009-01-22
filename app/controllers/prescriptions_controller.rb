@@ -2,11 +2,18 @@ class PrescriptionsController < ApplicationController
   def index
     @patient = Patient.find(params[:patient_id] || session[:patient_id]) rescue nil
     @orders = @patient.current_orders rescue []
-    render :layout => 'menu'
+    render :template => 'prescriptions/index', :layout => 'menu'
   end
   
   def new
     @patient = Patient.find(params[:patient_id] || session[:patient_id]) rescue nil
+  end
+  
+  def void 
+    @order = Order.find(params[:order_id])
+    @order.void!
+    flash.now[:notice] = "Order was successfully voided"
+    index and return
   end
   
   def create
@@ -33,11 +40,6 @@ class PrescriptionsController < ApplicationController
       @drug_order.save!
     end                  
     redirect_to "/prescriptions?patient_id=#{@patient.id}"
-  end
-  
-  def print
-#    @patient = Patient.find(params[:id] || session[:patient_id]) rescue nil
-#    print_and_redirect("/patients/print_national_id/?patient_id=#{@patient.id}", next_task(@patient))  
   end
   
   # Look up the set of matching generic drugs based on the concepts. We 
@@ -77,7 +79,7 @@ class PrescriptionsController < ApplicationController
     render :text => "No matching drugs found for #{params[:formulation]}" and return unless drug
 
     # Eventually we will have a real dosage table lookup here based on weight
-    dosage_form = drug.form.name rescue 'tablet'
+    dosage_form = drug.form.name rescue 'dose'
     doses = [
       "None", 
       "1 #{dosage_form}", 
