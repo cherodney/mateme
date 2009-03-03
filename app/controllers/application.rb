@@ -19,13 +19,8 @@ class ApplicationController < ActionController::Base
 
   def next_task(patient)
     current_location_name = Location.current_location.name
-<<<<<<< HEAD:app/controllers/application.rb
-#    todays_encounters = @patient.encounters.current.active.find(:all, :include => [:type]).map{|e| e.type.name}
-     todays_encounters = patient.encounters.find(:all, :include => [:type], :conditions => ['DATE(encounter_datetime) = ?', Date.today]).map{|e| e.type.name}   
-=======
     todays_encounters = patient.encounters.current.active.find(:all, :include => [:type]).map{|e| e.type.name}
     
->>>>>>> f428437e76ff14aa5b1963a247bd25fe0ce0c2f1:app/controllers/application.rb
 #    return "/encounters/new/registration?patient_id=#{patient.id}" if current_location_name.match(/ART/) && !todays_encounters.include?("REGISTRATION")
 #    return "/encounters/new/vitals?patient_id=#{patient.id}" if current_location_name.match(/ART/) && !todays_encounters.include?("VITALS")
 #    return "/encounters/new/appointment?patient_id=#{patient.id}" if current_location_name.match(/ART/) && !todays_encounters.include?("APPOINTMENT")
