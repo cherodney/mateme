@@ -39,7 +39,7 @@ class Patient < ActiveRecord::Base
     return unless self.national_id
     sex =  self.person.gender.match(/F/i) ? "(F)" : "(M)"
     address = self.person.address.strip[0..24].humanize.delete("'") rescue ""
-    self.identifier rescue ""
+    ident = self.identifier rescue ""
     label = ZebraPrinter::StandardLabel.new
     label.font_size = 2
     label.font_horizontal_multiplier = 2
@@ -48,7 +48,7 @@ class Patient < ActiveRecord::Base
     label.draw_barcode(50,180,0,1,5,15,120,false,"#{self.national_id}")
     label.draw_multi_text("#{self.person.name.titleize.delete("'")}") #'
     label.draw_multi_text("#{self.national_id_with_dashes} #{self.person.birthdate_formatted}#{sex}")
-    label.draw_multi_text("#{address} #{self.identifier}")
+    label.draw_multi_text("#{address} #{ident}")
     label.print(1)
   end
   
@@ -95,24 +95,24 @@ class Patient < ActiveRecord::Base
   end
 #identifier id for Pre-ART, ART, EID numbers
  def identifier_id
-    id = nil
-    id ||= identifier_capture
-    id
+    ident = nil
+    ident ||= identifier_capture
+    ident
   end
 
  def identifier(force = true)
-    id ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("ARV Number").id).identifier rescue nil
-    id ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("EID Number").id).identifier rescue nil
-    id ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("Pre ART Number").id).identifier rescue nil
+    ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("ARV Number").id).identifier rescue nil
+    ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("EID Number").id).identifier rescue nil
+    ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("Pre ART Number").id).identifier rescue nil
     return id unless force
-    id ||= PatientIdentifierType.find_by_name("ARV Number").next_identifier(:patient => self).identifier
-    id ||= PatientIdentifierType.find_by_name("EID Number").next_identifier(:patient => self).identifier
-    id ||= PatientIdentifierType.find_by_name("Pre ART Number").next_identifier(:patient => self).identifier
-    id
+    ident ||= PatientIdentifierType.find_by_name("ARV Number").next_identifier(:patient => self).identifier
+    ident ||= PatientIdentifierType.find_by_name("EID Number").next_identifier(:patient => self).identifier
+    ident ||= PatientIdentifierType.find_by_name("Pre ART Number").next_identifier(:patient => self).identifier
+    ident
   end
 
   def identifier_capture(force = true)
-  id = self.identifier(force)
+  ident = self.identifier(force)
   end
 
 end
