@@ -11,6 +11,6 @@
 <span class='title'>Mother's Surname:</span> <%= @patient.person.names.first.family_name2 rescue '' %><br/>
 <span class='title'>Home Village:</span> <%= @patient.person.addresses.first.address2 rescue '' %><br/>
 <span class='title'>Current Village:</span> <%= @patient.person.addresses.first.city_village rescue 'Unknown' %><br/>
-<span class='title'>Identifier Number:</span> <%= @patient.identifier_id rescue ''%><br/>
+<span class='title'>Identifier Number:</span> <%= @patient.identifier rescue ''%><br/>
 </p>
 </div>

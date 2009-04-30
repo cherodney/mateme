@@ -62,6 +62,10 @@ class PeopleController < ApplicationController
       redirect_to :action => "index"
     end
   end
+
+  def edit
+   
+  end
  
 end
  

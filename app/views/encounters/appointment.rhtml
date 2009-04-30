@@ -51,4 +51,18 @@
                                                                                    :tt_pageStyleClass => "Date DatesOnly", 
                                                                                    :tt_onLoad => "calculate_dates();", 
                                                                                    :id => 'next_appointment_date'}) %>
+  <label for='return_visit_type'>Return Visit Type</label>
+  <%= hidden_field_tag("observations[][concept_name]","RETURN VISIT TYPE") %>
+  <%= hidden_field_tag("observations[][patient_id]", @patient.id) %>
+  <%= hidden_field_tag("observations[][obs_datetime]", DateTime.now()) %>
+  <%= select_tag("observations[][value_text]",options_for_select([["Pre-ART"],
+  						                  ["ART"],
+						                  ["EID"],
+						                  ["KS"],
+						                  ["TB"],
+						                  ["PMTCT"],
+					                          ["Antenatal"],
+                                                                  ["Postnatal"]]),
+  {:helpText => 'Return Visit Type',
+   :field_type => 'text'})%>
 </form>

@@ -39,7 +39,6 @@ class Patient < ActiveRecord::Base
     return unless self.national_id
     sex =  self.person.gender.match(/F/i) ? "(F)" : "(M)"
     address = self.person.address.strip[0..24].humanize.delete("'") rescue ""
-    ident = self.identifier rescue ""
     label = ZebraPrinter::StandardLabel.new
     label.font_size = 2
     label.font_horizontal_multiplier = 2
@@ -48,7 +47,7 @@ class Patient < ActiveRecord::Base
     label.draw_barcode(50,180,0,1,5,15,120,false,"#{self.national_id}")
     label.draw_multi_text("#{self.person.name.titleize.delete("'")}") #'
     label.draw_multi_text("#{self.national_id_with_dashes} #{self.person.birthdate_formatted}#{sex}")
-    label.draw_multi_text("#{address} #{ident}")
+    label.draw_multi_text("#{address}")
     label.print(1)
   end
   
@@ -93,26 +92,12 @@ class Patient < ActiveRecord::Base
   def max_height
     WeightHeight.max_height(person.gender, person.age_in_months).to_f
   end
-#identifier id for Pre-ART, ART, EID numbers
- def identifier_id
-    ident = nil
-    ident ||= identifier_capture
-    ident
-  end
-
- def identifier(force = true)
-    ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("ARV Number").id).identifier rescue nil
-    ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("EID Number").id).identifier rescue nil
-    ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("Pre ART Number").id).identifier rescue nil
-    return id unless force
-    ident ||= PatientIdentifierType.find_by_name("ARV Number").next_identifier(:patient => self).identifier
-    ident ||= PatientIdentifierType.find_by_name("EID Number").next_identifier(:patient => self).identifier
-    ident ||= PatientIdentifierType.find_by_name("Pre ART Number").next_identifier(:patient => self).identifier
-    ident
-  end
-
-  def identifier_capture(force = true)
-  ident = self.identifier(force)
-  end
+#identifier for Pre-ART, ART, EID numbers
+ def identifier
+   ident = self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("ARV Number").id).identifier rescue nil
+   ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("EID Number").id).identifier rescue nil
+   ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("Pre ART Number").id).identifier rescue nil
+   ident ||= self.patient_identifiers.find_by_identifier_type(PatientIdentifierType.find_by_name("District TB Number").id).identifier rescue nil
+ end
 
 end

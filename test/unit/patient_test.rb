@@ -72,6 +72,25 @@ A40,142,0,2,2,2,N,"Katoleza"
 P1
 EOF
     end
+
+ should "not allow the label to overflow to another label if there is a long address" do
+      patient = patient(:evan)
+      patient.person.stubs(:address).returns("A_VERY_VERY_VERY_VERY_LONG ADDRESS")
+     # assert_equal patient.national_id_label, <<EOF
+     assert_equal 1, patient.national_id_label.scan(/\nN/).size, <<EOF
+
+N
+q801
+Q329,026
+ZT
+B50,180,0,1,5,15,120,N,"311"
+A40,50,0,2,2,2,N,"Evan Waters"
+A40,96,0,2,2,2,N,"311 09/Jun/1982(M)"
+A40,142,0,2,2,2,N,"Katoleza ARV-311"
+P1
+EOF
+    end
+
     
     should "get the min weight for this patient based on their gender and age" do
       patient = patient(:evan)
