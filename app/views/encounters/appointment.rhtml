@@ -55,14 +55,14 @@
   <%= hidden_field_tag("observations[][concept_name]","RETURN VISIT TYPE") %>
   <%= hidden_field_tag("observations[][patient_id]", @patient.id) %>
   <%= hidden_field_tag("observations[][obs_datetime]", DateTime.now()) %>
-  <%= select_tag("observations[][value_text]",options_for_select([["Pre-ART"],
-  						                  ["ART"],
-						                  ["EID"],
-						                  ["KS"],
-						                  ["TB"],
-						                  ["PMTCT"],
-					                          ["Antenatal"],
-                                                                  ["Postnatal"]]),
+  <%= select_tag("observations[][value_text]",options_for_select([["PRE-ART VISIT"],
+  						                  ["ART VISIT"],
+						                  ["EID VISIT"],
+						                  ["KS VISIT"],
+						                  ["TB VISIT"],
+						                  ["PMTCT VISIT"],
+					                          ["ANC VISIT"],
+                                                                  ["POSTNATAL VISIT"]]),
   {:helpText => 'Return Visit Type',
    :field_type => 'text'})%>
 </form>
